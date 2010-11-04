@@ -61,3 +61,12 @@ perform the upload for use in your deploy scripts
   end
 end
 </code></pre>
+
+h2. Using Amazon CloudFront Content Delivery Network (CDN)
+
+To use Amazon CloudFront as a CDN for your assets all you need to do is "create a CloudFront distribution":http://docs.amazonwebservices.com/AmazonCloudFront/latest/GettingStartedGuide/ for the bucket you have defined your configuration and then substitute your unique CloudFront domain name in <code>config/environments/production.rb</code>
+
+<pre><code>config.action_controller.asset_host = Proc.new do |source|
+ 'http://my_domain.d374pjuyllr15e.cloudfront.net'
+end
+</code></pre>
