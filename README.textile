@@ -17,7 +17,12 @@ This library achieves the following:
 
 h2. Usage
 
-<code>config/environments/production.rb</code>
+Add the gem to your <code>Gemfile</code>
+
+<code>gem "asset_id"</code>
+
+Configure <code>config/environments/production.rb</code> to use Amazon S3 as the asset host
+and to use the id-stamped asset paths in helpers
 
 <pre><code>config.action_controller.asset_host = Proc.new do |source|
  'http://my_bucket.s3.amazonaws.com'
@@ -27,7 +32,21 @@ config.action_controller.asset_path = Proc.new do |source|
 end
 </code></pre>
 
-<code>lib/tasks/asset_id_tasks.rake</code>
+Add your Amazon S3 configuration details to <code>config/asset_id.yml</code>
+
+<pre><code>development:
+  access_key_id: 'MY_ACCESS_KEY'
+  secret_access_key: 'MY_ACCESS_SECRET'
+  bucket: "my_dev_bucket"
+
+production:
+  access_key_id: 'MY_ACCESS_KEY'
+  secret_access_key: 'MY_ACCESS_SECRET'
+  bucket: "my_live_bucket"
+</code></pre>
+
+Optionally create a rake task in <code>lib/tasks/asset_id_tasks.rake</code> to
+perform the upload for use in your deploy scripts
 
 <pre><code>namespace :asset do
   namespace :id do
