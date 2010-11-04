@@ -10,6 +10,8 @@ that is all I needed it for.
 This library takes standard Rails asset paths such as <code>/stylesheets/main.css?1288717704</code> and converts them
 into <code>http://my_bucket.s3.amazonaws.com/stylesheets/main-id-95df8d9bf5237ad08df3115ee74dcb10.css</code>.
 
+It uses an MD5 hash of the file contents to produce the id so the same asset will always have the same ID.
+
 In my quest to achieve a Google Page Speed score of 100, this library achieves the following:
 
 * Assets served from a cookie-less domain
@@ -54,7 +56,7 @@ perform the upload for use in your deploy scripts
 <pre><code>namespace :asset do
   namespace :id do
     
-    desc "uploads the current assets to s3 with fingerprints"
+    desc "uploads the current assets to s3 with stamped ids"
     task :upload do
       AWS::S3::DEFAULT_HOST.replace "s3-eu-west-1.amazonaws.com" # If using EU bucket
       AssetID::Base.asset_paths += ['favicon.png']
