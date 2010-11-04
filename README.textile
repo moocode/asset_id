@@ -1,0 +1,36 @@
+Asset ID
+
+Only works with Rails 3 +
+
+Uploads static assets to Amazon S3 with unique identifiers encoded into the path of the asset. 
+
+ - Assets served from a cookie-less domain
+ - Unique identifier is not encoded into a query parameter (so it is cacheable by proxy servers)
+ - All assets have far-future expires headers for caching
+ - Assets have the Cache-Control: public header for caching
+ - CSS and javascript is GZipped
+
+config/environments/production.rb
+
+config.action_controller.asset_host = Proc.new do |source|
+ 'http://my_bucket.s3.amazonaws.com'
+end
+config.action_controller.asset_path = Proc.new do |source|
+ AssetID::S3.fingerprint(source)
+end
+
+lib/tasks/asset_id_tasks.rake
+
+namespace :asset do
+  namespace :id do
+    
+    desc "uploads the current assets to s3 with fingerprints"
+    task :upload do
+      AWS::S3::DEFAULT_HOST.replace "s3-eu-west-1.amazonaws.com"
+      AssetID::Base.asset_paths += ['favicon.png']
+      AssetID::S3.upload
+    end
+    
+  end
+end
+
