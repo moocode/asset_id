@@ -105,8 +105,8 @@ module AssetID
     def self.upload(options={})
       connect_to_s3
       assets.each do |asset|
-        puts "Uploading #{asset} as #{fingerprint(asset)}"
-        mime_type = MIME::Types.of(asset).first
+        puts "asset_id: Uploading #{asset} as #{fingerprint(asset)}" if options[:debug]
+        mime_type = MIME::Types.of(asset).first.to_s
         
         headers = {
           :content_type => mime_type,
@@ -119,6 +119,8 @@ module AssetID
         else
           data = File.read(asset)
         end
+        
+        puts "asset_id: headers: #{headers.inspect}" if options[:debug]
         
         AWS::S3::S3Object.store(
           fingerprint(asset),
