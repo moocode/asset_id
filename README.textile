@@ -83,5 +83,3 @@ end
 </code></pre>
 
 SSL works fine here as well.
-
-

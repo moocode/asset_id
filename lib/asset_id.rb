@@ -1,6 +1,7 @@
 require 'digest/md5'
 require 'mime/types'
 require 'aws/s3'
+require 'time'
 
 module AssetID
   
@@ -81,7 +82,7 @@ module AssetID
     end
     
     def self.cache_headers
-      {'Expires' => 1.year.from_now.httpdate, 'Cache-Control' => 'public'}
+      {'Expires' => (Time.now + (60*60*24*365)).httpdate, 'Cache-Control' => 'public'} # 1 year expiry
     end
     
     def self.gzip_headers
