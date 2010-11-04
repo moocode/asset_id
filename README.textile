@@ -1,11 +1,13 @@
-h1 Asset ID - Asset stamping and uploading to S3 for Rails
+h1. Asset ID - Asset stamping and uploading to S3 for Rails
 
-h2 About
+h2. About
 
 Uploads static assets to Amazon S3 with unique identifiers encoded into the path of the asset. 
 
 Only works with Rails 3.x because Rails 3 makes doing this sort of thing a lot easier and
 that is all I needed it for.
+
+This library achieves the following:
 
 * Assets served from a cookie-less domain
 * Unique identifier is not encoded into a query parameter (so it is cacheable by proxy servers)
@@ -13,7 +15,7 @@ that is all I needed it for.
 * Assets have the Cache-Control: public header for caching
 * CSS and javascript is GZipped
 
-h2 Usage
+h2. Usage
 
 <code>config/environments/production.rb</code>
 
@@ -32,7 +34,7 @@ end
     
     desc "uploads the current assets to s3 with fingerprints"
     task :upload do
-      AWS::S3::DEFAULT_HOST.replace "s3-eu-west-1.amazonaws.com"
+      AWS::S3::DEFAULT_HOST.replace "s3-eu-west-1.amazonaws.com" # If using EU bucket
       AssetID::Base.asset_paths += ['favicon.png']
       AssetID::S3.upload
     end
