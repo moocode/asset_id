@@ -21,35 +21,22 @@ module AssetID
       @@asset_paths
     end
     
-    def self.assets
-      a = []
-      asset_paths.each do |asset_path|
-        path = File.join path_prefix, asset_path
-        next unless File.exists? path
-        if File.directory? path
-          a += gather_assets_for(path)
-        else
-          a << path
-        end
-      end
-      a
+    def self.absolute_path(path)
+      File.join path_prefix, path
     end
     
-    def self.gather_assets_for(dir)
-      a = []
-      Dir.glob(File.join dir, '/*').each do |file|
-        if File.directory? file
-          a += gather_assets_for(file)
-        else
-          a << file
-        end
-      end
-      a
+    def self.assets
+      asset_paths.inject([]) {|assets, path|
+        path = absolute_path(path)
+        assets << path if File.exists? path and !File.directory? path
+        assets += Dir.glob(path+'/**/*').inject([]) {|m, file| 
+          m << file unless File.directory? file; m 
+        }
+      }
     end
     
     def self.fingerprint(path)
       path = File.join path_prefix, path unless path =~ /#{path_prefix}/
-      #d = File.mtime(path).to_i.to_s
       d = Digest::MD5.hexdigest(File.read(path))
       path = path.gsub(path_prefix, '')
       File.join File.dirname(path), "#{File.basename(path, File.extname(path))}-id-#{d}#{File.extname(path)}"
