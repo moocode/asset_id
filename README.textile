@@ -39,12 +39,7 @@ end
 
 Add your Amazon S3 configuration details to <code>config/asset_id.yml</code>
 
-<pre><code>development:
-  access_key_id: 'MY_ACCESS_KEY'
-  secret_access_key: 'MY_ACCESS_SECRET'
-  bucket: "my_dev_bucket"
-
-production:
+<pre><code>production:
   access_key_id: 'MY_ACCESS_KEY'
   secret_access_key: 'MY_ACCESS_SECRET'
   bucket: "my_live_bucket"
@@ -59,7 +54,7 @@ perform the upload for use in your deploy scripts
     desc "uploads the current assets to s3 with stamped ids"
     task :upload do
       AWS::S3::DEFAULT_HOST.replace "s3-eu-west-1.amazonaws.com" # If using EU bucket
-      AssetID::Base.asset_paths += ['favicon.png']
+      AssetID::Base.asset_paths += ['favicon.png'] # Configure additional asset paths
       AssetID::S3.upload
     end
     
