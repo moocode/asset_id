@@ -7,13 +7,16 @@ Uploads static assets to Amazon S3 with unique identifiers encoded into the path
 Only works with Rails 3.x because Rails 3 makes doing this sort of thing a lot easier and
 that is all I needed it for.
 
-This library achieves the following:
+This library takes standard Rails asset paths such as <code>/stylesheets/main.css?1288717704</code> and converts them
+into <code>http://my_bucket.s3.amazonaws.com/stylesheets/main-id-95df8d9bf5237ad08df3115ee74dcb10.css</code>.
+
+In my quest to achieve a Google Page Speed score of 100, this library achieves the following:
 
 * Assets served from a cookie-less domain
 * Unique identifier is not encoded into a query parameter (so it is cacheable by proxy servers)
 * All assets have far-future expires headers for caching
 * Assets have the Cache-Control: public header for caching
-* CSS and javascript is GZipped
+* CSS and javascript is GZipped and the correct headers are added
 
 h2. Usage
 
