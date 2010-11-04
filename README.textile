@@ -20,6 +20,8 @@ In my quest to achieve a Google Page Speed score of 100, this library achieves t
 * Assets have the Cache-Control: public header for caching
 * CSS and javascript is GZipped and the correct headers are added
 
+As an added bonus, all your assets are available over <code>https://</code> as well.
+
 h2. Usage
 
 Add the gem to your <code>Gemfile</code>
@@ -62,6 +64,15 @@ perform the upload for use in your deploy scripts
 end
 </code></pre>
 
+h2. SSL configuration
+
+If you want to use the SSL host in your configuration you can do so in <code>config/environments/production.rb</code>
+
+<pre><code>config.action_controller.asset_host = Proc.new do |source|
+  request.ssl? 'https://my_bucket.s3.amazonaws.com' : 'http://my_bucket.s3.amazonaws.com'
+end
+</code></pre>
+
 h2. Using Amazon CloudFront Content Delivery Network (CDN)
 
 To use Amazon CloudFront as a CDN for your assets all you need to do is "create a CloudFront distribution":http://docs.amazonwebservices.com/AmazonCloudFront/latest/GettingStartedGuide/ for the bucket you have defined your configuration and then substitute your unique CloudFront domain name in <code>config/environments/production.rb</code>
@@ -70,3 +81,7 @@ To use Amazon CloudFront as a CDN for your assets all you need to do is "create 
  'http://my_domain.d374pjuyllr15e.cloudfront.net'
 end
 </code></pre>
+
+SSL works fine here as well.
+
+
