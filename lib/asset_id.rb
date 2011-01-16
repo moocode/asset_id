@@ -2,6 +2,7 @@ require 'digest/md5'
 require 'mime/types'
 require 'aws/s3'
 require 'time'
+require 'zlib'
 
 module AssetID
   
@@ -99,12 +100,37 @@ module AssetID
           :content_type => mime_type,
           :access => s3_permissions,
         }.merge(cache_headers)
+
+        data = File.read(asset)
+
+        if mime_type == 'text/css'
+          data.gsub! /url\((?:"([^"]*)"|'([^']*)'|([^)]*))\)/mi  do |match|
+            begin
+              # $1 is the double quoted string, $2 is single quoted, $3 is no quotes
+              uri = ($1 || $2 || $3).to_s.strip
+
+              puts "asset_id: Changing CSS URI #{uri} to #{fingerprint(uri)}" if options[:debug]
+
+              # if the uri appears to begin with a protocol then the asset isn't on the local filesystem
+              if uri =~ /[a-z]+:\/\//i
+                "url(#{uri})"
+              else
+                "url(#{fingerprint(uri)})"
+              end
+            rescue Errno::ENOENT
+              "url(#{uri})"
+            end
+          end
+        end
         
         if gzip_types.include? mime_type
-          data = `gzip -c #{asset}`
           headers.merge!(gzip_headers)
-        else
-          data = File.read(asset)
+          
+          data = returning StringIO.open('', 'w') do |gz_data|
+            gz = Zlib::GzipWriter.new(gz_data, nil, nil)
+            gz.write(data)
+            gz.close
+          end.string
         end
         
         puts "asset_id: headers: #{headers.inspect}" if options[:debug]
