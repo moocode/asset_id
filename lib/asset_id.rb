@@ -2,6 +2,7 @@ require 'digest/md5'
 require 'mime/types'
 require 'aws/s3'
 require 'time'
+require 'yaml'
 
 module AssetID
   
@@ -68,8 +69,12 @@ module AssetID
       )
     end
     
+    def self.expiry_date
+      @expiry_date ||= (Time.now + (60*60*24*365)).httpdate
+    end
+    
     def self.cache_headers
-      {'Expires' => (Time.now + (60*60*24*365)).httpdate, 'Cache-Control' => 'public'} # 1 year expiry
+      {'Expires' => expiry_date, 'Cache-Control' => 'public'} # 1 year expiry
     end
     
     def self.gzip_headers
@@ -89,10 +94,24 @@ module AssetID
       super(path)
     end
     
+    def self.cache_path
+      File.join(Rails.root, 'log', 'asset_id_cache.yml')
+    end
+    
     def self.upload(options={})
+      options[:cache] ||= true
       connect_to_s3
+      
+      cache = {}
+      if options[:cache]
+        cache = YAML.load_file(cache_path) rescue {}
+      end
+      
       assets.each do |asset|
-        puts "asset_id: Uploading #{asset} as #{fingerprint(asset)}" if options[:debug]
+        fp = fingerprint(asset)
+        
+        puts "asset_id: Uploading #{asset} as #{fp}" if options[:debug] 
+                
         mime_type = MIME::Types.of(asset).first.to_s
         
         headers = {
@@ -109,13 +128,22 @@ module AssetID
         
         puts "asset_id: headers: #{headers.inspect}" if options[:debug]
         
-        AWS::S3::S3Object.store(
-          fingerprint(asset),
-          data,
-          s3_bucket,
-          headers
-        ) unless options[:dry_run]
+        if options[:cache] and cache[asset] and cache[asset][:fingerprint] == fp
+          puts "asset_id: Cache hit #{asset} - doing nothing" 
+        else
+          AWS::S3::S3Object.store(
+            fp,
+            data,
+            s3_bucket,
+            headers
+          ) unless options[:dry_run]
+        end
+        
+        cache[asset] = {:expires => expiry_date.to_s, :fingerprint => fp}
       end
+      
+      puts "cache:\n#{YAML.dump(cache)}" if options[:debug]
+      File.open(cache_path, 'w') {|f| f.write(YAML.dump(cache))} unless options[:dry_run]
     end
     
   end
