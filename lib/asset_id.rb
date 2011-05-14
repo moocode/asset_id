@@ -23,7 +23,11 @@ module AssetID
     end
     
     def self.absolute_path(path)
-      File.join path_prefix, path
+      path =~ /#{path_prefix}/ ? path : File.join(path_prefix, path)
+    end
+    
+    def self.relative_path(path)
+      path.gsub(path_prefix, '')
     end
     
     def self.assets
@@ -37,9 +41,9 @@ module AssetID
     end
     
     def self.fingerprint(path)
-      path = File.join path_prefix, path unless path =~ /#{path_prefix}/
+      path = absolute_path(path)
       d = Digest::MD5.hexdigest(File.read(path))
-      path = path.gsub(path_prefix, '')
+      path = relative_path(path)
       File.join File.dirname(path), "#{File.basename(path, File.extname(path))}-id-#{d}#{File.extname(path)}"
     end
     
@@ -110,7 +114,7 @@ module AssetID
       assets.each do |asset|
         fp = fingerprint(asset)
         
-        puts "asset_id: Uploading #{asset} as #{fp}" if options[:debug] 
+        puts "asset_id: Uploading #{relative_path(asset)} as #{fp}" if options[:debug] 
                 
         mime_type = MIME::Types.of(asset).first.to_s
         
@@ -128,8 +132,8 @@ module AssetID
         
         puts "asset_id: headers: #{headers.inspect}" if options[:debug]
         
-        if options[:cache] and cache[asset] and cache[asset][:fingerprint] == fp
-          puts "asset_id: Cache hit #{asset} - doing nothing" 
+        if options[:cache] and cache[relative_path(asset)] and cache[relative_path(asset)][:fingerprint] == fp
+          puts "asset_id: Cache hit #{relative_path(asset)} - doing nothing" if options[:debug]
         else
           AWS::S3::S3Object.store(
             fp,
@@ -139,11 +143,11 @@ module AssetID
           ) unless options[:dry_run]
         end
         
-        cache[asset] = {:expires => expiry_date.to_s, :fingerprint => fp}
+        cache[relative_path(asset)] = {:expires => expiry_date.to_s, :fingerprint => fp}
       end
       
       puts "cache:\n#{YAML.dump(cache)}" if options[:debug]
-      File.open(cache_path, 'w') {|f| f.write(YAML.dump(cache))} unless options[:dry_run]
+      File.open(cache_path, 'w') {|f| f.write(YAML.dump(cache))} if options[:cache] and !options[:dry_run]
     end
     
   end
