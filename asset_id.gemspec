@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{asset_id}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Richard Taylor"]
-  s.date = %q{2010-11-04}
+  s.date = %q{2011-05-14}
   s.description = %q{asset_id is a library for uploading static assets to Amazon S3.}
   s.email = %q{moomerman@gmail.com}
   s.files = ["LICENSE", "README.textile","lib/asset_id.rb"]
