@@ -111,6 +111,7 @@ module AssetID
             "url(#{uri})"
           else
             asset = Asset.new(uri)
+            # TODO: Check the referenced asset is in the asset_paths
             puts "  - Changing CSS URI #{uri} to #{options[:prefix]}#{asset.fingerprint}" if @@debug
             "url(#{options[:prefix]}#{asset.fingerprint})"
           end

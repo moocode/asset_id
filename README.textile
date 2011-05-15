@@ -77,13 +77,13 @@ h2. CSS Images
 
 By default any relative CSS images that match files on the filesystem are converted to AssetID paths as well.  
 
-For S3, if you don't specify a <code>prefix</code> it will use the bucket URL by default.  You can override this in <code>config/asset_id.yml</code>:
+For S3, if you don't specify a <code>prefix</code> it will use the <code>http://</code> bucket URL by default.  You can override this in <code>config/asset_id.yml</code>.  For example if you wanted to use the <code>https://</code> url:
 
 <pre><code>production:
   access_key_id: 'MY_ACCESS_KEY'
   secret_access_key: 'MY_ACCESS_SECRET'
   bucket: "my_live_bucket"
-  prefix: "https://mydomain.cloudfront.net"
+  prefix: "https://my_bucket.s3.amazonaws.com"
 </code></pre>
 
 h2. Using Amazon CloudFront Content Delivery Network (CDN)
