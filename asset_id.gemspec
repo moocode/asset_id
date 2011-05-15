@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{asset_id}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Richard Taylor"]
   s.date = %q{2011-05-15}
   s.description = %q{asset_id is a library for uploading static assets to Amazon S3.}
   s.email = %q{moomerman@gmail.com}
-  s.files = ["LICENSE", "README.textile","lib/asset_id.rb"]
+  s.files = ["LICENSE", "README.textile","lib/asset_id.rb"] + Dir.glob('lib/asset_id/*.rb') + Dir.glob('lib/asset_id/backend/*.rb')
   s.has_rdoc = false
   s.homepage = %q{http://github.com/moomerman/asset_id}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
