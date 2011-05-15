@@ -49,7 +49,8 @@ module AssetID
     
     def self.fingerprint(path)
       asset = Asset.new(path)
-      return hit[:fingerprint] if hit = Cache.get(asset)
+      hit = Cache.get(asset)
+      return hit[:fingerprint] if hit
       return asset.fingerprint
     end
     
