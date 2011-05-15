@@ -23,7 +23,11 @@ module AssetID
     end
     
     def self.s3_prefix
-      s3_config['prefix']
+      s3_config['prefix'] || s3_bucket_url
+    end
+    
+    def self.s3_bucket_url
+      "http://#{s3bucket}.s3.amazonaws.com"
     end
     
     def self.upload(options={})
