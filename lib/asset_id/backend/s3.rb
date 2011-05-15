@@ -27,7 +27,7 @@ module AssetID
     end
     
     def self.s3_bucket_url
-      "http://#{s3bucket}.s3.amazonaws.com"
+      "http://#{s3_bucket}.s3.amazonaws.com"
     end
     
     def self.upload(options={})
