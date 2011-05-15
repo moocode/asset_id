@@ -15,7 +15,7 @@ module AssetID
       File.join(Rails.root, 'log', 'asset_id_cache.yml')
     end
     
-    def get(asset)
+    def self.get(asset)
       cache[asset.relative_path]
     end
     
