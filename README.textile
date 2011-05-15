@@ -35,7 +35,7 @@ and to use the id-stamped asset paths in helpers
  'http://my_bucket.s3.amazonaws.com'
 end
 config.action_controller.asset_path = Proc.new do |source|
- AssetID::S3.fingerprint(source)
+ AssetID::Asset.fingerprint(source)
 end
 </code></pre>
 
@@ -71,6 +71,19 @@ If you want to use the SSL host in your configuration you can do so in <code>con
 <pre><code>config.action_controller.asset_host = Proc.new do |source|
   request.ssl? 'https://my_bucket.s3.amazonaws.com' : 'http://my_bucket.s3.amazonaws.com'
 end
+</code></pre>
+
+h2. CSS Images
+
+By default any relative CSS images that match files on the filesystem are converted to AssetID paths as well.  
+
+For S3, if you don't specify a <code>prefix</code> it will use the bucket URL by default.  You can override this in <code>config/asset_id.yml</code>:
+
+<pre><code>production:
+  access_key_id: 'MY_ACCESS_KEY'
+  secret_access_key: 'MY_ACCESS_SECRET'
+  bucket: "my_live_bucket"
+  prefix: "https://mydomain.cloudfront.net"
 </code></pre>
 
 h2. Using Amazon CloudFront Content Delivery Network (CDN)
