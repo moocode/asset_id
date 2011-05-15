@@ -48,7 +48,9 @@ module AssetID
     end
     
     def self.fingerprint(path)
-      Asset.new(path).fingerprint
+      asset = Asset.new(path)
+      return hit[:fingerprint] if hit = Cache.get(asset)
+      return asset.fingerprint
     end
     
     attr_reader :path

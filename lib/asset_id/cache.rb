@@ -15,6 +15,10 @@ module AssetID
       File.join(Rails.root, 'log', 'asset_id_cache.yml')
     end
     
+    def get(asset)
+      cache[asset.relative_path]
+    end
+    
     def self.hit?(asset)
       return true if cache[asset.relative_path] and cache[asset.relative_path][:fingerprint] == asset.fingerprint
       cache[asset.relative_path] = {:expires => asset.expiry_date.to_s, :fingerprint => asset.fingerprint}
