@@ -20,6 +20,7 @@ module AssetID
       @@debug = options[:debug] if options[:debug]
       @@nocache = options[:nocache] if options[:nocache]
       @@nofingerprint = options[:nofingerprint] if options[:nofingerprint]
+      @@nofingerprint ||= []
     end
     
     def self.asset_paths
@@ -89,7 +90,7 @@ module AssetID
     
     def fingerprint
       p = relative_path
-      return p if @@nofingerprint
+      return p if relative_path =~ /^\/assets\//
       File.join File.dirname(p), "#{File.basename(p, File.extname(p))}-id-#{md5}#{File.extname(p)}"
     end
     
