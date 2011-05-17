@@ -31,7 +31,7 @@ module AssetID
     end
     
     def self.upload(options={})
-      Asset.init(:debug => options[:debug])
+      Asset.init(:debug => options[:debug], :nofingerprint => options[:nofingerprint])
       
       assets = Asset.find
       return if assets.empty?
