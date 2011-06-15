@@ -8,7 +8,7 @@ module AssetID
     end
     
     def self.cache
-      @cache ||= YAML.load_file(cache_path) rescue {}
+      @cache ||= (YAML.load_file(cache_path) rescue {})
     end
     
     def self.cache_path
