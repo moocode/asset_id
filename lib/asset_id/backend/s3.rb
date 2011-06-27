@@ -47,6 +47,9 @@ module AssetID
           :access => s3_permissions,
         }.merge(asset.cache_headers)
         
+        #load css md5 before replace_css_images
+        asset.md5
+
         asset.replace_css_images!(:prefix => s3_prefix) if asset.css?
         
         if asset.gzip_type?
