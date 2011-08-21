@@ -22,12 +22,20 @@ module AssetID
       s3_config['bucket']
     end
     
+    def self.s3_folder
+      s3_config['folder']
+    end
+    
     def self.s3_prefix
       s3_config['prefix'] || s3_bucket_url
     end
     
     def self.s3_bucket_url
-      "http://#{s3_bucket}.s3.amazonaws.com"
+      "http://#{s3_bucket}.s3.amazonaws.com#{s3_folder ? "/#{s3_folder}" : '' }"
+    end
+    
+    def self.full_path(asset)
+      s3_folder ? "/#{s3_folder}#{asset.fingerprint}" : asset.fingerprint
     end
     
     def self.upload(options={})
@@ -55,13 +63,13 @@ module AssetID
         end
         
         if options[:debug]
-          puts "  - Uploading: #{asset.fingerprint} [#{asset.data.size} bytes]"
+          puts "  - Uploading: #{full_path(asset)} [#{asset.data.size} bytes]"
           puts "  - Headers: #{headers.inspect}"
         end
         
         unless options[:dry_run]
           res = AWS::S3::S3Object.store(
-            asset.fingerprint,
+            full_path(asset),
             asset.data,
             s3_bucket,
             headers
