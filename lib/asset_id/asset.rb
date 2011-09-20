@@ -112,7 +112,7 @@ module AssetID
           uri.gsub!(/^\.\.\//, '/')
           
           # if the uri appears to begin with a protocol then the asset isn't on the local filesystem
-          if uri =~ /[a-z]+:\/\//i
+          if uri =~ /[a-z]+:\/\//i || uri =~ /data:/i
             "url(#{uri})"
           else
             asset = Asset.new(uri)
