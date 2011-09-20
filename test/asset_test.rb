@@ -51,6 +51,12 @@ class AssetTest < Test::Unit::TestCase
     assert_equal 'body { background: url(https://example.com/images/thundercats-id-982f2a3a4d905189959e848badb4f55b.jpg); }', asset.data
   end
   
+  def test_parse_css_with_uri_not_in_asset_path
+    AssetID::Asset.asset_paths = []
+    asset = AssetID::Asset.find(['stylesheets']).first
+    asset.replace_css_images!(:prefix => 'https://example.com')
+    assert_equal 'body { background: url(/images/thundercats.jpg?12345); }', asset.data
+  end
 end
 
 class Rails

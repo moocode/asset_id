@@ -120,6 +120,8 @@ module AssetID
             if Asset.asset_paths.include? first_folder
               puts "  - Changing CSS URI #{uri} to #{options[:prefix]}#{asset.fingerprint}" if @@debug
               "url(#{options[:prefix]}#{asset.fingerprint})"
+            else
+              "url(#{uri})"
             end
           end
         rescue Errno::ENOENT => e
