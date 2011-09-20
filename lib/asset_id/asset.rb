@@ -60,10 +60,10 @@ module AssetID
     attr_reader :path
     
     def initialize(path)
-      @path = path
+      @path = path.split('?')[0]
       @path = absolute_path
     end
-    
+
     def path_prefix
       File.join Rails.root, 'public'
     end
