@@ -116,9 +116,11 @@ module AssetID
             "url(#{uri})"
           else
             asset = Asset.new(uri)
-            # TODO: Check the referenced asset is in the asset_paths
-            puts "  - Changing CSS URI #{uri} to #{options[:prefix]}#{asset.fingerprint}" if @@debug
-            "url(#{options[:prefix]}#{asset.fingerprint})"
+            first_folder = (uri[0] == '/' ? uri[1..-1] : uri).split('/')[0]
+            if Asset.asset_paths.include? first_folder
+              puts "  - Changing CSS URI #{uri} to #{options[:prefix]}#{asset.fingerprint}" if @@debug
+              "url(#{options[:prefix]}#{asset.fingerprint})"
+            end
           end
         rescue Errno::ENOENT => e
           puts "  - Warning: #{uri} not found" if @@debug
