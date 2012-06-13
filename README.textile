@@ -68,7 +68,7 @@ h2. SSL configuration
 
 If you want to use the SSL host in your configuration you can do so in <code>config/environments/production.rb</code>
 
-<pre><code>config.action_controller.asset_host = Proc.new do |source|
+<pre><code>config.action_controller.asset_host = Proc.new do |source, request|
   request.ssl? 'https://my_bucket.s3.amazonaws.com' : 'http://my_bucket.s3.amazonaws.com'
 end
 </code></pre>
