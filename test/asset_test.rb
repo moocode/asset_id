@@ -50,6 +50,12 @@ class AssetTest < Test::Unit::TestCase
     asset.replace_css_images!(:prefix => 'https://example.com')
     assert_equal 'body { background: url(https://example.com/images/thundercats-id-982f2a3a4d905189959e848badb4f55b.jpg); }', asset.data
   end
+
+  def test_cache_hit
+    assert !AssetID::Cache.hit?(@asset)
+    assert AssetID::Cache.hit?(@asset)
+  end
+
   
 end
 

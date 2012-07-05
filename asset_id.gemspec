@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.description = %q{asset_id is a library for uploading static assets to Amazon S3.}
   s.email = %q{moomerman@gmail.com}
   s.files = ["LICENSE", "README.textile","lib/asset_id.rb"] + Dir.glob('lib/asset_id/*.rb') + Dir.glob('lib/asset_id/backend/*.rb')
-  s.has_rdoc = false
   s.homepage = %q{http://github.com/moomerman/asset_id}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
   s.require_paths = ["lib"]
